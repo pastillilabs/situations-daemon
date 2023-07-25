@@ -1,0 +1,47 @@
+Name: situations-daemon
+Summary: Background service launcher and plugins for Situations
+Version: 1.0
+Release: 0
+# The contents of the Group field should be one of the groups listed here:
+# http://gitorious.org/meego-developer-tools/spectacle/blobs/master/data/GROUPS
+Group: Qt/Qt
+URL: http://www.pastillilabs.com
+License: Copyright (C) Pastilli Labs - All Rights Reserved
+# This must be generated before uploading a package to a remote build service.
+# Usually this line does not need to be modified.
+Sources:
+- '%{name}-%{version}.tar.bz2'
+Description: |
+  Background Service and plugins for Situations
+Configure: none
+# The qtc5 builder inserts macros to allow QtCreator to have fine
+# control over qmake/make execution
+Builder: qtc5
+
+Macros:
+  - '__provides_exclude_from;^%{_datadir}/.*$'
+  - '__requires_exclude;^libc|libgcc_s|libcalendar.*$'
+# This section specifies build dependencies that are resolved using pkgconfig.
+# This is the preferred way of specifying build dependencies for your package.
+PkgConfigBR:
+  - Qt5Contacts
+  - Qt5Core
+  - contentaction5
+  - KF5CalendarCore
+  - libical
+  - libmkcal-qt5
+
+# Build dependencies without a pkgconfig setup can be listed here
+# PkgBR:
+#   - package-needed-to-build
+
+# All installed files
+Files:
+  - '%{_datadir}/%{name}/lib/libcalendar.so'
+  - '%{_datadir}/%{name}/lib/libcontacts.so'
+  - '%{_datadir}/%{name}/lib/libdaemon.so'
+  - '%{_datadir}/%{name}/lib/liblaunch.so'
+  - '%{_sysconfdir}/systemd/system/situations-daemon.service'
+
+# For more information about yaml and what's supported in Sailfish OS
+# build system, please see https://wiki.merproject.org/wiki/Spectacle
