@@ -15,7 +15,7 @@ Name:       situations-daemon
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    Background service launcher and plugins for Situations
-Version:    1.0
+Version:    1.0.2
 Release:    0
 Group:      Qt/Qt
 License:    Copyright (C) Pastilli Labs - All Rights Reserved
@@ -30,7 +30,7 @@ BuildRequires:  pkgconfig(contentaction5)
 BuildRequires:  pkgconfig(KF5CalendarCore)
 BuildRequires:  pkgconfig(libical)
 BuildRequires:  pkgconfig(libmkcal-qt5)
-Obsoletes:  situations-sonar
+Obsoletes:   situations-sonar
 
 %description
 Background Service and plugins for Situations
@@ -70,6 +70,7 @@ rm -rf %{buildroot}
 %post
 /sbin/ldconfig
 # >> post
+pkill -f "harbour-situations2application server"
 %systemd_post situations-daemon.service
 systemctl start situations-daemon
 # << post
@@ -86,6 +87,7 @@ systemctl start situations-daemon
 %{_datadir}/%{name}/lib/libcontacts.so
 %{_datadir}/%{name}/lib/libdaemon.so
 %{_datadir}/%{name}/lib/liblaunch.so
-%{_sysconfdir}/systemd/system/situations-daemon.service
+%{_sysconfdir}/sailjail/permissions/harbour-situations2application.profile
+%{_sysconfdir}/systemd/system/%{name}.service
 # >> files
 # << files
