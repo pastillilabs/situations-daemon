@@ -15,7 +15,7 @@ Name:       situations-daemon
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    Background service launcher and plugins for Situations
-Version:    1.0.2
+Version:    1.0.3
 Release:    0
 Group:      Qt/Qt
 License:    Copyright (C) Pastilli Labs - All Rights Reserved
@@ -70,8 +70,9 @@ rm -rf %{buildroot}
 %post
 /sbin/ldconfig
 # >> post
-pkill -f "harbour-situations2application server"
+pkill -f "harbour-situations2application"
 %systemd_post situations-daemon.service
+systemctl daemon-reload
 systemctl start situations-daemon
 # << post
 

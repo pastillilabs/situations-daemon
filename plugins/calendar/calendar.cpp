@@ -39,17 +39,16 @@ QJsonArray Calendar::events() const {
     const QDate endDate(QDate::currentDate().addDays(1));
 
     mStorage->load(startDate, endDate);
-    mStorage->loadRecurringIncidences();
+//    mStorage->loadRecurringIncidences();
 
     KCalendarCore::Incidence::List incidences(mCalendar->incidences(startDate, endDate));
-    const mKCal::ExtendedCalendar::ExpandedIncidenceList incidenceList(mCalendar->expandRecurrences(&incidences, QDateTime(startDate), QDateTime(endDate)));
+//    const mKCal::ExtendedCalendar::ExpandedIncidenceList incidenceList(mCalendar->expandRecurrences(&incidences, QDateTime(startDate), QDateTime(endDate)));
 
-    QJsonArray events;
-    for(const mKCal::ExtendedCalendar::ExpandedIncidence& expandedIncident : incidenceList) {
-        const mKCal::ExtendedCalendar::ExpandedIncidenceValidity& incidenceValidity(expandedIncident.first);
-        const KCalendarCore::Incidence::Ptr incidence(expandedIncident.second);
+    QJsonArray jsonEvents;
+    for(KCalendarCore::Incidence::Ptr& incidence : incidences) {
+        if(incidence->type() == KCalendarCore::Incidence::TypeEvent) {
+            const auto event = qSharedPointerCast<KCalendarCore::Event>(incidence);
 
-        if(incidence->type() == KCalendarCore::IncidenceBase::TypeEvent) {
             const QString calendarUid(mCalendar->notebook(incidence));
             const mKCal::Notebook::Ptr notebook(mStorage->notebook(calendarUid));
 
@@ -57,10 +56,10 @@ QJsonArray Calendar::events() const {
                 continue;
             }
 
-            const QJsonObject event{
+            const QJsonObject jsonEvent{
                 {QStringLiteral("calendarId"), calendarUid},
-                {QStringLiteral("begin"), QString::number(incidenceValidity.dtStart.toMSecsSinceEpoch())},
-                {QStringLiteral("end"), QString::number(incidenceValidity.dtEnd.toMSecsSinceEpoch())},
+                {QStringLiteral("begin"), QString::number(event->dtStart().toMSecsSinceEpoch())},
+                {QStringLiteral("end"), QString::number(event->dtEnd().toMSecsSinceEpoch())},
                 {QStringLiteral("title"), incidence->summary()},
                 {QStringLiteral("description"), incidence->description()},
                 {QStringLiteral("eventLocation"), incidence->location()},
@@ -69,11 +68,11 @@ QJsonArray Calendar::events() const {
                 {QStringLiteral("allDay"), incidence->allDay()},
                 {QStringLiteral("availability"), static_cast<int>(incidence->status())}
             };
-            events.append(event);
+            jsonEvents.append(jsonEvent);
         }
     }
 
-    return events;
+    return jsonEvents;
 }
 
 void Calendar::storageModified([[maybe_unused]] mKCal::ExtendedStorage* storage, [[maybe_unused]] const QString& info) {
