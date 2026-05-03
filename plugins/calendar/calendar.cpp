@@ -39,10 +39,8 @@ QJsonArray Calendar::events() const {
     const QDate endDate(QDate::currentDate().addDays(1));
 
     mStorage->load(startDate, endDate);
-//    mStorage->loadRecurringIncidences();
 
     KCalendarCore::Incidence::List incidences(mCalendar->incidences(startDate, endDate));
-//    const mKCal::ExtendedCalendar::ExpandedIncidenceList incidenceList(mCalendar->expandRecurrences(&incidences, QDateTime(startDate), QDateTime(endDate)));
 
     QJsonArray jsonEvents;
     for(KCalendarCore::Incidence::Ptr& incidence : incidences) {

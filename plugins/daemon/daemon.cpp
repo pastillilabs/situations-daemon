@@ -7,5 +7,5 @@ QVersionNumber Daemon::version() const {
     // Kepp in sync with version info in
     // - situations-daemon.spec
     // - platformmanager.cpp
-    return QVersionNumber(1, 0, 2);
+    return QVersionNumber(1, 0, 4);
 }
